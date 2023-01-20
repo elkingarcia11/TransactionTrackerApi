@@ -1,11 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
-from passlib.context import CryptContext
 from functions import emailIsValid
 from oauth2 import create_access_token
 from schemas import Token
 from database import users
-pwd_context = CryptContext(schemes=["bcrypt"],deprecated="auto")
 
 router = APIRouter(prefix="/api/tracker/login", tags=["Authentication"])
 

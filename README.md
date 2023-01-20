@@ -19,6 +19,8 @@ pip install "psycopg2-binary"
 
 pip install "psycopg2"
 
+pip install "pandas"
+
 Update path variables
 
 export PATH_VARIABLE=variable_value

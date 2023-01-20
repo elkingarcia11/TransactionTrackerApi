@@ -1,16 +1,10 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
-from bson import ObjectId
-
 
 class Token (BaseModel):
     access_token: str
     token_type: str
-
-class LogInRequest(BaseModel):  
-    email: str
-    password : str
 
 class TokenData(BaseModel):
     userId : Optional[str] = None
@@ -25,19 +19,17 @@ class Transaction(BaseModel):
     date = datetime.today()
 
 class TransactionResponse(BaseModel):
-    id : str
+    id : str 
     name : str
     invoice : str
     receipt : str
     amount : str
     dateProcessed : str
-    date = datetime.today()
-
+    date : str
 
 class TransactionRequestResponse(BaseModel):
     status : int
     message : str
 
-class UserRequestResponse(BaseModel):
-    _id : ObjectId
-    role : str
+class IdList(BaseModel):
+    ids : List[str]

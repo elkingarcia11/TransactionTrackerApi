@@ -9,9 +9,9 @@ def insert_item(collection_name, item):
 def get_item(collection_name, item):
     item = collection_name.find_one(item)
     if item is None:
-        return False
-    else:
         return True
+    else:
+        return False
 
 def delete_item(collection_name, item_id):
     collection_name.delete_one({"_id":ObjectId(item_id)});
