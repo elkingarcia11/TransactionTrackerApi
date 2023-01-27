@@ -21,6 +21,8 @@ pip install "psycopg2"
 
 pip install "pandas"
 
+pip install "gunicorn"
+
 Update path variables
 
 export PATH_VARIABLE=variable_value

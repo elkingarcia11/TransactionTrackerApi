@@ -4,7 +4,7 @@ from api import get_item
 from functions import isValidTransaction
 from schemas import IdList, TokenData, Transaction, TransactionRequestResponse, TransactionResponse
 from oauth2 import get_current_user
-from bson import ObjectId
+from bson import ObjectId, objectid
 from database import clients
 import pydantic
 from fastapi.encoders import jsonable_encoder
@@ -37,7 +37,6 @@ async def addTransaction(transaction: Transaction, user_credentials: TokenData =
             # if item exists in DB
             json_compatible_item_data = jsonable_encoder(transaction)
             if get_item(clients, json_compatible_item_data):
-                print("YER2")
                 raise HTTPException(status_code=409, detail="This is a duplicate entry")
             else:
                 json_compatible_item_data = jsonable_encoder(transaction)
@@ -69,22 +68,21 @@ async def addTransaction(transaction: Transaction, user_credentials: TokenData =
 @router.put("/", status_code=200)
 async def updateTransaction(transaction: TransactionResponse, user_credentials: TokenData = Depends(get_current_user)):
     if user_credentials.userId is None:
-        print("aw")
         return TransactionRequestResponse(status=403, message="Invalid credentials")
     if user_credentials.role is None:
-        print("aww")
         return TransactionRequestResponse(status=403, message="Invalid credentials")
     if user_credentials.role == "admin":
-        print("awww")
-        clients.find_one_and_update({"_id": ObjectId(transaction.id)},
+        if transaction.oid is not None and objectid.ObjectId.is_valid(transaction.oid):
+            clients.find_one_and_update({"_id": ObjectId(transaction.oid)},
                                     {"$set":
                                      {"name": transaction.name, "invoice": transaction.invoice, "receipt": transaction.receipt,
                                       "amount": transaction.amount, "dateProcessed": transaction.dateProcessed, "date": transaction.date}
                                      }
                                     )
-        return {"data": transaction}
+            return {"data": transaction}
+        else:
+            return TransactionRequestResponse(status=403, message="Could not update information")
     else:
-        print("awwww")
         return TransactionRequestResponse(status=403, message="Invalid credentials")
 
 # Delete transaction(s)
@@ -98,7 +96,7 @@ async def deleteTransactions(id_list : IdList, user_credentials: TokenData = Dep
     if user_credentials.role == "admin":
         deleted_transactions : IdList = []
         for i in json_compatible_item_data["ids"]:
-            if i is not None and i != "":
+            if i is not None and objectid.ObjectId.is_valid(i):
                 clients.delete_one({"_id": ObjectId(i)})
                 deleted_transactions.append(i)
         return {"Deleted transactions": deleted_transactions}

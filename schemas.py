@@ -19,7 +19,7 @@ class Transaction(BaseModel):
     date = datetime.today()
 
 class TransactionResponse(BaseModel):
-    id : str 
+    oid : str 
     name : str
     invoice : str
     receipt : str
