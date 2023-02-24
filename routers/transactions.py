@@ -16,6 +16,7 @@ pydantic.json.ENCODERS_BY_TYPE[ObjectId]=str
 # Get transactions
 @router.get("/", status_code=200)
 async def getTransactions(user_credentials: TokenData = Depends(get_current_user)):
+    print(user_credentials)
     if user_credentials.userId is None:
         raise HTTPException(status_code=403, detail="Invalid credentials")
     if user_credentials.role is None:
@@ -27,6 +28,7 @@ async def getTransactions(user_credentials: TokenData = Depends(get_current_user
 # Add transaction
 @router.post("/", status_code=200)
 async def addTransaction(transaction: Transaction, user_credentials: TokenData = Depends(get_current_user)):
+    print("YOO")
     if user_credentials.userId is None:
         return TransactionRequestResponse(status=403, message="Invalid credentials")
     if user_credentials.role is None:
@@ -50,6 +52,7 @@ async def addTransaction(transaction: Transaction, user_credentials: TokenData =
 # Add duplicate transaction
 @router.post("/override", status_code=201)
 async def addTransaction(transaction: Transaction, user_credentials: TokenData = Depends(get_current_user)):
+    print("YOO3")
     if user_credentials.userId is None:
         return TransactionRequestResponse(status=403, message="Invalid credentials")
     if user_credentials.role is None:
@@ -67,6 +70,7 @@ async def addTransaction(transaction: Transaction, user_credentials: TokenData =
 # Update transaction
 @router.put("/", status_code=200)
 async def updateTransaction(transaction: TransactionResponse, user_credentials: TokenData = Depends(get_current_user)):
+    print("YOO1")
     if user_credentials.userId is None:
         return TransactionRequestResponse(status=403, message="Invalid credentials")
     if user_credentials.role is None:
@@ -75,7 +79,7 @@ async def updateTransaction(transaction: TransactionResponse, user_credentials: 
         if transaction.oid is not None and objectid.ObjectId.is_valid(transaction.oid):
             clients.find_one_and_update({"_id": ObjectId(transaction.oid)},
                                     {"$set":
-                                     {"name": transaction.name, "invoice": transaction.invoice, "receipt": transaction.receipt,
+                                     {"name": transaction.name.lower(), "invoice": transaction.invoice, "receipt": transaction.receipt,
                                       "amount": transaction.amount, "dateProcessed": transaction.dateProcessed, "date": transaction.date}
                                      }
                                     )
@@ -88,6 +92,7 @@ async def updateTransaction(transaction: TransactionResponse, user_credentials: 
 # Delete transaction(s)
 @router.delete("/", status_code=200)
 async def deleteTransactions(id_list : IdList, user_credentials: TokenData = Depends(get_current_user)):
+    print("YOO2")
     json_compatible_item_data = jsonable_encoder(id_list)
     if user_credentials.userId is None:
         raise HTTPException(status_code=403, detail="Invalid credentials")

@@ -13,6 +13,6 @@ def updateTransaction(collection_name, item):
     collection_name.find_one_and_update(
         {"_id":ObjectId(item.id)},
         {"$set":
-            {"name" : item.name, "invoice" : item.invoice, "receipt" : item.receipt, "amount" : item.amount, "dateProcessed" : item.date.isoformat(), "date" : datetime.today()}
+            {"name" : item.name.lower(), "invoice" : item.invoice, "receipt" : item.receipt, "amount" : item.amount, "dateProcessed" : item.date.isoformat(), "date" : datetime.today()}
         }
     )

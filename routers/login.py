@@ -8,7 +8,7 @@ from database import users
 router = APIRouter(prefix="/api/tracker/login", tags=["Authentication"])
 
 # Login
-@router.get("/")
+@router.post("/")
 async def login(user_credentials: OAuth2PasswordRequestForm = Depends()):
     if emailIsValid(user_credentials.username):
         query = {"$and":[{"username":user_credentials.username},
